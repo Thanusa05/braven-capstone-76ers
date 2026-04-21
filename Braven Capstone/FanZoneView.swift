@@ -18,52 +18,28 @@ struct FanZoneView: View {
                     FansHeader()
                     VStack(alignment: .leading, spacing: 20) {
                         URWordSection()
-                        SectionBlock(title: "GAMES", imageName: "76games", navTitle: "Games", caption: "Play the Spectrum Sprint to earn points.")
+                        SectionBlock(title: "GAMES", imageName: "76games", navTitle: "Games", caption: "Play the Spectrum Sprint to earn points.", height: 170)
                         HStack(spacing: 14) {
                             SquareSectionBlock(title: "SPOTLIGHT", imageName: "76spotlight", navTitle: "Spotlight")
                             SquareSectionBlock(title: "MULTIMEDIA", imageName: "76multimedia", navTitle: "Multimedia")
                         }
-                        SectionBlock(title: "JR. 76ERS KIDS CLUB", imageName: "76kids", navTitle: "Kids Club", caption: "JOIN THE FUN!")
+                        SectionBlock(title: "JR. 76ERS KIDS CLUB", imageName: "76kids", navTitle: "Kids Club", caption: "JOIN THE FUN!", height: 170)
                         HStack(spacing: 14) {
                             SquareSectionBlock(title: "COMMUNITY", imageName: "76community", navTitle: "Community")
                             SquareSectionBlock(title: "SPONSORS", imageName: "76sponser", navTitle: "Sponsors")
                         }
-                        SectionBlock(title: "SHOP", imageName: "76shop", navTitle: "Shop", caption: "Official merch + fan-exclusive drops.")
-                        NavigationLink(destination: perksView()) {
-                            HStack(spacing: 14) {
-                                Image("76perks")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 70, height: 70)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("PERKS")
-                                        .font(.title3).bold()
-                                        .foregroundStyle(Color.sixersBlue)
-                                    Text("Geofenced deals · trivia · insider access")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundStyle(Color.sixersBlue)
-                            }
-                            .padding()
-                            .background(Color.white)
-                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.sixersBlue.opacity(0.2)))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                        .buttonStyle(.plain)
+                        SectionBlock(title: "SHOP", imageName: "76shop", navTitle: "Shop", caption: "Official merch + fan-exclusive drops.", height: 170)
+                        PerksEntry()
                     }
-                    .padding(16)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
                     .padding(.bottom, 96)
                 }
+                .frame(maxWidth: .infinity)
             }
             .background(Color.white)
 
-            Button {
-                showCustomize = true
-            } label: {
+            Button { showCustomize = true } label: {
                 Image(systemName: "plus")
                     .font(.title2).bold()
                     .foregroundStyle(.white)
@@ -76,11 +52,30 @@ struct FanZoneView: View {
             .padding(.bottom, 20)
         }
         .navigationBarHidden(true)
-        .sheet(isPresented: $showCustomize) {
-            CustomizeSheet()
-        }
+        .sheet(isPresented: $showCustomize) { CustomizeSheet() }
     }
 }
+
+// MARK: - Reusable framed image (width = container, height = explicit, clipped)
+
+private struct FramedImage: View {
+    let name: String
+    let height: CGFloat
+    var cornerRadius: CGFloat = 0
+
+    var body: some View {
+        Color.clear
+            .frame(height: height)
+            .overlay(
+                Image(name)
+                    .resizable()
+                    .scaledToFill()
+            )
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+    }
+}
+
+// MARK: - Header
 
 private struct FansHeader: View {
     var body: some View {
@@ -90,12 +85,13 @@ private struct FansHeader: View {
                 .font(.title3).bold()
                 .foregroundStyle(.white)
                 .tracking(2)
-                .padding(.vertical, 14)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 56)
     }
 }
+
+// MARK: - UR Word (hero Game Day banner)
 
 private struct URWordSection: View {
     var body: some View {
@@ -105,35 +101,31 @@ private struct URWordSection: View {
                 .foregroundStyle(Color.sixersBlue)
             NavigationLink(destination: gameDayView()) {
                 ZStack(alignment: .bottomLeading) {
-                    Image("76games")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 210)
-                        .clipped()
-                    LinearGradient(colors: [.black.opacity(0.5), .clear],
+                    FramedImage(name: "76games", height: 210, cornerRadius: 12)
+                    LinearGradient(colors: [.black.opacity(0.55), .clear],
                                    startPoint: .bottom, endPoint: .top)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 70)
+                        .frame(height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     Text("GAME DAY")
                         .font(.largeTitle).bold()
                         .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.5), radius: 4)
                         .padding(14)
                 }
-                .frame(maxWidth: .infinity)
-                .frame(height: 210)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .buttonStyle(.plain)
         }
     }
 }
 
+// MARK: - Wide section
+
 private struct SectionBlock: View {
     let title: String
     let imageName: String
     let navTitle: String
     let caption: String
+    let height: CGFloat
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -142,29 +134,24 @@ private struct SectionBlock: View {
                 .foregroundStyle(Color.sixersBlue)
             NavigationLink(destination: GenericDetail(title: navTitle, imageName: imageName)) {
                 ZStack(alignment: .bottomLeading) {
-                    Image(imageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 170)
-                        .clipped()
+                    FramedImage(name: imageName, height: height, cornerRadius: 12)
                     LinearGradient(colors: [.black.opacity(0.55), .clear],
                                    startPoint: .bottom, endPoint: .top)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 60)
+                        .frame(height: 70)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     Text(caption)
                         .font(.subheadline).bold()
                         .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.5), radius: 3)
                         .padding(14)
                 }
-                .frame(maxWidth: .infinity)
-                .frame(height: 170)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .buttonStyle(.plain)
         }
     }
 }
+
+// MARK: - Half-width square section
 
 private struct SquareSectionBlock: View {
     let title: String
@@ -177,18 +164,49 @@ private struct SquareSectionBlock: View {
                 .font(.headline).bold()
                 .foregroundStyle(Color.sixersBlue)
             NavigationLink(destination: GenericDetail(title: navTitle, imageName: imageName)) {
-                Image(imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 140)
-                    .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                FramedImage(name: imageName, height: 140, cornerRadius: 12)
             }
             .buttonStyle(.plain)
         }
     }
 }
+
+// MARK: - Perks entry card
+
+private struct PerksEntry: View {
+    var body: some View {
+        NavigationLink(destination: perksView()) {
+            HStack(spacing: 14) {
+                Image("76perks")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 70, height: 70)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("PERKS")
+                        .font(.title3).bold()
+                        .foregroundStyle(Color.sixersBlue)
+                    Text("Geofenced deals · trivia · insider access")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Color.sixersBlue)
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.white)
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.sixersBlue.opacity(0.2)))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Generic detail
 
 private struct GenericDetail: View {
     let title: String
@@ -199,6 +217,7 @@ private struct GenericDetail: View {
                 Image(imageName)
                     .resizable()
                     .scaledToFit()
+                    .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 Text(title)
                     .font(.largeTitle).bold()
@@ -212,6 +231,8 @@ private struct GenericDetail: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
+// MARK: - Customize sheet
 
 private struct CustomizeSheet: View {
     @Environment(\.dismiss) private var dismiss
