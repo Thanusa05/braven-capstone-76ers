@@ -92,6 +92,7 @@ private struct FansHeader: View {
                 .tracking(2)
                 .padding(.vertical, 14)
         }
+        .frame(maxWidth: .infinity)
         .frame(height: 56)
     }
 }
@@ -106,17 +107,21 @@ private struct URWordSection: View {
                 ZStack(alignment: .bottomLeading) {
                     Image("76games")
                         .resizable()
-                        .scaledToFill()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity)
                         .frame(height: 210)
                         .clipped()
                     LinearGradient(colors: [.black.opacity(0.5), .clear],
                                    startPoint: .bottom, endPoint: .top)
+                        .frame(maxWidth: .infinity)
                         .frame(height: 70)
                     Text("GAME DAY")
                         .font(.largeTitle).bold()
                         .foregroundStyle(.white)
                         .padding(14)
                 }
+                .frame(maxWidth: .infinity)
+                .frame(height: 210)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .buttonStyle(.plain)
@@ -139,17 +144,21 @@ private struct SectionBlock: View {
                 ZStack(alignment: .bottomLeading) {
                     Image(imageName)
                         .resizable()
-                        .scaledToFill()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity)
                         .frame(height: 170)
                         .clipped()
                     LinearGradient(colors: [.black.opacity(0.55), .clear],
                                    startPoint: .bottom, endPoint: .top)
+                        .frame(maxWidth: .infinity)
                         .frame(height: 60)
                     Text(caption)
                         .font(.subheadline).bold()
                         .foregroundStyle(.white)
                         .padding(14)
                 }
+                .frame(maxWidth: .infinity)
+                .frame(height: 170)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .buttonStyle(.plain)
@@ -170,9 +179,9 @@ private struct SquareSectionBlock: View {
             NavigationLink(destination: GenericDetail(title: navTitle, imageName: imageName)) {
                 Image(imageName)
                     .resizable()
-                    .scaledToFill()
-                    .frame(height: 140)
+                    .aspectRatio(contentMode: .fill)
                     .frame(maxWidth: .infinity)
+                    .frame(height: 140)
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
